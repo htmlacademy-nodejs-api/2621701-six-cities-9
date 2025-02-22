@@ -2,9 +2,7 @@ import { Command } from './command.interface.js';
 import { TSVFileReader } from '../../shared/file-reader/index.js';
 
 export class ImportCommand implements Command {
-  public getName(): string {
-    return '--import';
-  }
+  public readonly name: string = '--import';
 
   public execute(...parameters: string[]): void {
     const [filename] = parameters;

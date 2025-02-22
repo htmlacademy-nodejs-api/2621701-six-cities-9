@@ -1,9 +1,8 @@
-import { userType } from './userType.type.js';
+import { UserType } from './userType.type.js';
 
 export type User = {
-    name: string;
-    email: string;
-    avatar: string;
-    password: string;
-    userStatus: userType;
+  name: string;
+  email: string;
+  avatar: string;
+  userStatus: UserType;
 };

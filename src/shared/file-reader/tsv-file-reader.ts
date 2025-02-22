@@ -9,6 +9,7 @@ import {
   User,
   UserType,
 } from '../types/index.js';
+import { SEPARATOR } from '../constants/index.js';
 
 export class TSVFileReader implements FileReader {
   private rawData = '';
@@ -46,7 +47,6 @@ export class TSVFileReader implements FileReader {
       preview,
       photos,
       isPremium,
-      isSelected,
       rating,
       type,
       rooms,
@@ -65,7 +65,6 @@ export class TSVFileReader implements FileReader {
       preview,
       photos: this.parsePhotos(photos),
       isPremium: this.parseIsPremium(isPremium),
-      isSelected: this.parseIsSelected(isSelected),
       rating: Number.parseInt(rating, 10),
       type: type as HouseType,
       rooms: Number.parseInt(rooms, 10),
@@ -78,15 +77,13 @@ export class TSVFileReader implements FileReader {
   }
 
   private parsePhotos(photosString: string): string[] {
-    return photosString.split(',').map((photo) => photo.trim() as Facility);
+    return photosString
+      .split(SEPARATOR)
+      .map((photo) => photo.trim() as Facility);
   }
 
   private parseIsPremium(isPremiumString: string): boolean {
-    return isPremiumString === 'Да';
-  }
-
-  private parseIsSelected(isSelectedString: string): boolean {
-    return isSelectedString === 'Да';
+    return isPremiumString.toLowerCase() === 'Да'.toLowerCase();
   }
 
   private parsePrice(priceString: string): number {
@@ -95,26 +92,25 @@ export class TSVFileReader implements FileReader {
 
   private parseFacilities(facilitiesString: string): Facility[] {
     return facilitiesString
-      .split(',')
+      .split(SEPARATOR)
       .map((facility) => facility.trim() as Facility);
   }
 
   private parseAuthor(authorString: string): User {
-    const [name, email, avatar, password, userStatus] = authorString
-      .split(',')
+    const [name, email, avatar, userStatus] = authorString
+      .split(SEPARATOR)
       .map((data) => data.trim());
     return {
       name,
       email,
       avatar,
-      password,
       userStatus: userStatus as UserType,
     };
   }
 
   private parseCoords(coordsString: string): Coords {
     const [latitude, longitude] = coordsString
-      .split(',')
+      .split(SEPARATOR)
       .map((coordinate) => Number.parseFloat(coordinate));
     return { latitude, longitude };
   }
