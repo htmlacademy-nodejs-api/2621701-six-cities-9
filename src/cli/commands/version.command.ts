@@ -17,11 +17,9 @@ function isPackageJSONConfig(value: unknown): value is PackageJSONConfig {
 }
 
 export class VersionCommand implements Command {
-  constructor(private readonly filePath: string = 'package.json') {}
+  public readonly name: string = '--version';
 
-  public getName(): string {
-    return '--version';
-  }
+  constructor(private readonly filePath: string = 'package.json') {}
 
   public async execute(..._parameters: string[]): Promise<void> {
     try {

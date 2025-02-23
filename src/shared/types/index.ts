@@ -5,3 +5,4 @@ export { HouseType } from './Offer/houseType.type.js';
 export { Offer } from './Offer/offer.type.js';
 export { User } from './User/user.type.js';
 export { UserType } from './User/userType.type.js';
+export { MockServerData } from './mock-server-data.type.js';
