@@ -1,52 +1,70 @@
 {
   "api": {
-    "title": [
-      "Уютная квартира в центре",
-      "Современный дом у реки"
+    "titles": [
+      "Просторная 3-комнатная квартира в центре Москвы",
+      "Уютная 2-комнатная квартира в историческом центре Санкт-Петербурга",
+      "Светлая 2-комнатная квартира в новом доме в Казани",
+      "3-комнатная квартира в тихом районе Новосибирска",
+      "2-комнатная квартира с дизайнерским ремонтом в Екатеринбурге",
+      "Уютная 2-комнатная квартира в центре Нижнего Новгорода",
+      "Просторная 3-комнатная квартира с видом на Волгу в Самаре",
+      "3-комнатная квартира в центре Ростова-на-Дону",
+      "2-комнатная квартира в новом доме в Краснодаре",
+      "Однокомнатная квартира в центре Сочи"
     ],
-    "description": [
-      "Просторная квартира с видом на парк",
-      "Дом с большим участком и бассейном"
+    "descriptions": [
+      "Просторная 3-комнатная квартира в центре Москвы с видом на Кремль. Ремонт выполнен в современном стиле, есть встроенная кухня и две ванные комнаты.",
+      "Уютная 2-комнатная квартира в историческом центре Санкт-Петербурга. Высокие потолки, паркетные полы, вид на канал.",
+      "Светлая 2-комнатная квартира в новом доме. Евроремонт, современная кухня, балкон с видом на парк.",
+      "3-комнатная квартира в тихом районе Новосибирска. Большая кухня-гостиная, две ванные комнаты, балкон.",
+      "2-комнатная квартира с дизайнерским ремонтом. Высокие потолки, большие окна, современная кухня.",
+      "Уютная 2-комнатная квартира в центре Нижнего Новгорода. Ремонт выполнен в классическом стиле, есть балкон.",
+      "Просторная 3-комнатная квартира с видом на Волгу. Евроремонт, большая кухня, две ванные комнаты.",
+      "3-комнатная квартира в центре Ростова-на-Дону. Современный ремонт, большая кухня-гостиная, балкон.",
+      "2-комнатная квартира в новом доме. Евроремонт, современная кухня, балкон с видом на город.",
+      "Однокомнатная квартира в центре Сочи. Ремонт выполнен в современном стиле, есть балкон."
     ],
-    "publishedAt": [
-      "2023-10-01",
-      "2023-10-02"
-    ],
-    "city": [
+    "cities": [
+      "Санкт-Петербург",
       "Москва",
-      "Санкт-Петербург"
+      "Казань",
+      "Новосибирск",
+      "Екатеринбург",
+      "Нижний Новгород",
+      "Самара",
+      "Казань",
+      "Ростов-на-Дону",
+      "Краснодар"
     ],
-    "preview": [
+    "previews": [
       "https://example.com/preview1.jpg",
-      "https://example.com/preview2.jpg"
+      "https://example.com/preview2.jpg",
+      "https://example.com/preview3.jpg",
+      "https://example.com/preview4.jpg",
+      "https://example.com/preview5.jpg",
+      "https://example.com/preview6.jpg",
+      "https://example.com/preview7.jpg",
+      "https://example.com/preview8.jpg"
     ],
     "photos": [
-      "https://example.com/photo1.jpg,https://example.com/photo2.jpg,https://example.com/photo3.jpg,https://example.com/photo4.jpg,https://example.com/photo5.jpg,https://example.com/photo6.jpg",
-      "https://example.com/photo7.jpg,https://example.com/photo8.jpg,https://example.com/photo9.jpg,https://example.com/photo10.jpg,https://example.com/photo11.jpg,https://example.com/photo12.jpg"
+      "https://example.com/photo7.jpg,https://example.com/photo8.jpg,https://example.com/photo9.jpg,https://example.com/photo10.jpg,https://example.com/photo11.jpg,https://example.com/photo12.jpg",
+      "https://example.com/photo13.jpg,https://example.com/photo14.jpg,https://example.com/photo15.jpg,https://example.com/photo16.jpg,https://example.com/photo17.jpg,https://example.com/photo18.jpg",
+      "https://example.com/photo19.jpg,https://example.com/photo20.jpg,https://example.com/photo21.jpg,https://example.com/photo22.jpg,https://example.com/photo23.jpg,https://example.com/photo24.jpg",
+      "https://example.com/photo25.jpg,https://example.com/photo26.jpg,https://example.com/photo27.jpg,https://example.com/photo28.jpg,https://example.com/photo29.jpg,https://example.com/photo30.jpg",
+      "https://example.com/photo31.jpg,https://example.com/photo32.jpg,https://example.com/photo33.jpg,https://example.com/photo34.jpg,https://example.com/photo35.jpg,https://example.com/photo36.jpg",
+      "https://example.com/photo37.jpg,https://example.com/photo38.jpg,https://example.com/photo39.jpg,https://example.com/photo40.jpg,https://example.com/photo41.jpg,https://example.com/photo42.jpg",
+      "https://example.com/photo43.jpg,https://example.com/photo44.jpg,https://example.com/photo45.jpg,https://example.com/photo46.jpg,https://example.com/photo47.jpg,https://example.com/photo48.jpg",
+      "https://example.com/photo49.jpg,https://example.com/photo50.jpg,https://example.com/photo51.jpg,https://example.com/photo52.jpg,https://example.com/photo53.jpg,https://example.com/photo54.jpg",
+      "https://example.com/photo55.jpg,https://example.com/photo56.jpg,https://example.com/photo57.jpg,https://example.com/photo58.jpg,https://example.com/photo59.jpg,https://example.com/photo60.jpg",
+      "https://example.com/photo61.jpg,https://example.com/photo62.jpg,https://example.com/photo63.jpg,https://example.com/photo64.jpg,https://example.com/photo65.jpg,https://example.com/photo66.jpg"
     ],
     "isPremium": [
       "Да",
       "Нет"
     ],
-    "rating": [
-      "4.5",
-      "4.8"
-    ],
-    "type": [
+    "types": [
       "apartment",
       "house"
-    ],
-    "rooms": [
-      "3",
-      "5"
-    ],
-    "guests": [
-      "4",
-      "6"
-    ],
-    "price": [
-      "5000",
-      "15000"
     ],
     "facilities": [
       "Breakfast",
@@ -55,13 +73,29 @@
       "Washer",
       "Towels"
     ],
-    "author": [
+    "authors": [
+      "Anna Petrova,anna.petrova@example.com,https://example.com/avatar/anna.jpg,pro",
       "Ivan Ivanov,ivan.ivanov@example.com,https://example.com/avatar/ivan.jpg,common",
-      "Anna Petrova,anna.petrova@example.com,https://example.com/avatar/anna.jpg,pro"
+      "Elena Sidorova,elena.sidorova@example.com,https://example.com/avatar/elena.jpg,pro",
+      "Dmitry Kuznetsov,dmitry.kuznetsov@example.com,https://example.com/avatar/dmitry.jpg,common",
+      "Olga Smirnova,olga.smirnova@example.com,https://example.com/avatar/olga.jpg,pro",
+      "Alexey Popov,alexey.popov@example.com,https://example.com/avatar/alexey.jpg,common",
+      "Maria Kuznetsova,maria.kuznetsova@example.com,https://example.com/avatar/maria.jpg,pro",
+      "Sergey Ivanov,sergey.ivanov@example.com,https://example.com/avatar/sergey.jpg,common",
+      "Tatyana Petrova,tatyana.petrova@example.com,https://example.com/avatar/tatyana.jpg,pro",
+      "Nikolay Sidorov,nikolay.sidorov@example.com,https://example.com/avatar/nikolay.jpg,common"
     ],
     "coords": [
       "55.7558,37.6173",
-      "59.9343,30.3351"
+      "59.9343,30.3351",
+      "56.8360,60.6104",
+      "55.0084,82.9357",
+      "56.8519,60.6122",
+      "43.5855,39.7231",
+      "53.2001,50.1500",
+      "51.5335,46.0343",
+      "47.2225,39.7204",
+      "45.0397,38.9879"
     ]
   }
 }
