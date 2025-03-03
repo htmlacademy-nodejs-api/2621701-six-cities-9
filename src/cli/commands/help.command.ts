@@ -4,7 +4,7 @@ import chalk from 'chalk';
 export class HelpCommand implements Command {
   public readonly name: string = '--help';
 
-  public async execute(..._parameters: string[]): Promise<void> {
+  public execute(..._parameters: string[]): void {
     console.info(`
         ${chalk.bold.blue('Программа для подготовки данных для REST API сервера.')}
         ${chalk.underline.red('Пример:')}

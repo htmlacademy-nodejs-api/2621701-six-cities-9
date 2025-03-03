@@ -10,7 +10,7 @@ import {
   User,
   UserType,
 } from '../types/index.js';
-import { SEPARATOR } from '../constants/index.js';
+import { SEPARATOR, TAB_SEPARATOR } from '../constants/index.js';
 
 export class TSVFileReader extends EventEmitter implements FileReader {
   private CHUNK_SIZE = 16384; // 16KB
@@ -31,8 +31,9 @@ export class TSVFileReader extends EventEmitter implements FileReader {
 
     for await (const chunk of readStream) {
       remainingData += chunk.toString();
+      nextLinePosition = remainingData.indexOf('\n');
 
-      while ((nextLinePosition = remainingData.indexOf('\n')) >= 0) {
+      while (nextLinePosition) {
         const completeRow = remainingData.slice(0, nextLinePosition + 1);
         remainingData = remainingData.slice(++nextLinePosition);
         importedRowCount++;
@@ -62,7 +63,7 @@ export class TSVFileReader extends EventEmitter implements FileReader {
       facilities,
       author,
       coords,
-    ] = line.split('\t');
+    ] = line.split(TAB_SEPARATOR);
 
     return {
       title,

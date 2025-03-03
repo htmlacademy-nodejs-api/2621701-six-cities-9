@@ -6,7 +6,7 @@ import { Offer } from '../../shared/types/index.js';
 export class ImportCommand implements Command {
   public readonly name: string = '--import';
 
-  public async execute(...parameters: string[]): Promise<void> {
+  public execute(...parameters: string[]): void {
     const [filename] = parameters;
     const fileReader = new TSVFileReader(filename.trim());
 

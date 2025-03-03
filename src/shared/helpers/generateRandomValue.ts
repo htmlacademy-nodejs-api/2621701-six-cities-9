@@ -3,5 +3,5 @@ export function generateRandomValue(
   max: number,
   numAfterDigit = 0
 ) {
-  return +(Math.random() * (max - min) + min).toFixed(numAfterDigit);
+  return Number((Math.random() * (max - min) + min).toFixed(numAfterDigit));
 }

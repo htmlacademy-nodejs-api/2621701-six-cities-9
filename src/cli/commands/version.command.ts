@@ -21,7 +21,7 @@ export class VersionCommand implements Command {
 
   constructor(private readonly filePath: string = 'package.json') {}
 
-  public async execute(..._parameters: string[]): Promise<void> {
+  public execute(..._parameters: string[]): void {
     try {
       const version = this.readVersion();
       console.info(version);
