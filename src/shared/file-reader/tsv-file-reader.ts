@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import EventEmitter from 'node:events';
+import { createReadStream } from 'node:fs';
 
 import { FileReader } from './file-reader.interface.js';
 import {
@@ -9,32 +10,40 @@ import {
   User,
   UserType,
 } from '../types/index.js';
+import { SEPARATOR, TAB_SEPARATOR } from '../constants/index.js';
 
-export class TSVFileReader implements FileReader {
-  private rawData = '';
+export class TSVFileReader extends EventEmitter implements FileReader {
+  private CHUNK_SIZE = 16384; // 16KB
 
-  constructor(private readonly filename: string) {}
-
-  public read(): void {
-    this.rawData = readFileSync(this.filename, { encoding: 'utf-8' });
+  constructor(private readonly filename: string) {
+    super();
   }
 
-  public toArray(): Offer[] {
-    this.validateRawData();
-    return this.parseRawDataToOffers();
-  }
+  public async read(): Promise<void> {
+    const readStream = createReadStream(this.filename, {
+      highWaterMark: this.CHUNK_SIZE,
+      encoding: 'utf-8',
+    });
 
-  private validateRawData(): void {
-    if (!this.rawData) {
-      throw new Error('File was not read');
+    let remainingData = '';
+    let nextLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of readStream) {
+      remainingData += chunk.toString();
+      nextLinePosition = remainingData.indexOf('\n');
+
+      while (nextLinePosition) {
+        const completeRow = remainingData.slice(0, nextLinePosition + 1);
+        remainingData = remainingData.slice(++nextLinePosition);
+        importedRowCount++;
+
+        const parsedOffer = this.parseLineToOffer(completeRow);
+        this.emit('line', parsedOffer);
+      }
     }
-  }
 
-  private parseRawDataToOffers(): Offer[] {
-    return this.rawData
-      .split('\n')
-      .filter((row) => row.trim().length > 0)
-      .map((line) => this.parseLineToOffer(line));
+    this.emit('end', importedRowCount);
   }
 
   private parseLineToOffer(line: string): Offer {
@@ -46,7 +55,6 @@ export class TSVFileReader implements FileReader {
       preview,
       photos,
       isPremium,
-      isSelected,
       rating,
       type,
       rooms,
@@ -55,7 +63,7 @@ export class TSVFileReader implements FileReader {
       facilities,
       author,
       coords,
-    ] = line.split('\t');
+    ] = line.split(TAB_SEPARATOR);
 
     return {
       title,
@@ -65,7 +73,6 @@ export class TSVFileReader implements FileReader {
       preview,
       photos: this.parsePhotos(photos),
       isPremium: this.parseIsPremium(isPremium),
-      isSelected: this.parseIsSelected(isSelected),
       rating: Number.parseInt(rating, 10),
       type: type as HouseType,
       rooms: Number.parseInt(rooms, 10),
@@ -78,15 +85,13 @@ export class TSVFileReader implements FileReader {
   }
 
   private parsePhotos(photosString: string): string[] {
-    return photosString.split(',').map((photo) => photo.trim() as Facility);
+    return photosString
+      .split(SEPARATOR)
+      .map((photo) => photo.trim() as Facility);
   }
 
   private parseIsPremium(isPremiumString: string): boolean {
-    return isPremiumString === 'Да';
-  }
-
-  private parseIsSelected(isSelectedString: string): boolean {
-    return isSelectedString === 'Да';
+    return isPremiumString.toLowerCase() === 'Да'.toLowerCase();
   }
 
   private parsePrice(priceString: string): number {
@@ -95,26 +100,25 @@ export class TSVFileReader implements FileReader {
 
   private parseFacilities(facilitiesString: string): Facility[] {
     return facilitiesString
-      .split(',')
+      .split(SEPARATOR)
       .map((facility) => facility.trim() as Facility);
   }
 
   private parseAuthor(authorString: string): User {
-    const [name, email, avatar, password, userStatus] = authorString
-      .split(',')
+    const [name, email, avatar, userStatus] = authorString
+      .split(SEPARATOR)
       .map((data) => data.trim());
     return {
       name,
       email,
       avatar,
-      password,
       userStatus: userStatus as UserType,
     };
   }
 
   private parseCoords(coordsString: string): Coords {
     const [latitude, longitude] = coordsString
-      .split(',')
+      .split(SEPARATOR)
       .map((coordinate) => Number.parseFloat(coordinate));
     return { latitude, longitude };
   }
