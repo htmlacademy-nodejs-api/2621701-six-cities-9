@@ -1,1 +1,6 @@
-export type HouseType = 'apartment' | 'house' | 'room' | 'hotel';
+export enum HouseType {
+  Apartment = 'apartment',
+  House = 'house',
+  Room = 'room',
+  Hotel = 'hotel',
+}

@@ -1,13 +1,57 @@
 import { Command } from './command.interface.js';
 import { TSVFileReader } from '../../shared/file-reader/index.js';
-import { getErrorMessage } from '../../shared/helpers/index.js';
+import { getMongoURI } from '../../shared/helpers/index.js';
 import { Offer } from '../../shared/types/index.js';
+import {
+  DefaultOfferService,
+  OfferModel,
+  OfferService,
+} from '../../shared/modules/offer/index.js';
+import {
+  DefaultUserService,
+  UserModel,
+  UserService,
+} from '../../shared/modules/user/index.js';
+import {
+  DatabaseClient,
+  MongoDatabaseClient,
+} from '../../shared/database-client/index.js';
+import { Logger } from '../../shared/logger/index.js';
+import { ConsoleLogger } from '../../shared/logger/console.logger.js';
+import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
 
 export class ImportCommand implements Command {
   public readonly name: string = '--import';
 
-  public execute(...parameters: string[]): void {
-    const [filename] = parameters;
+  private readonly userService: UserService;
+  private readonly offerService: OfferService;
+  private readonly databaseClient: DatabaseClient;
+  private readonly logger: Logger;
+  private salt: string;
+
+  constructor() {
+    this.onImportedOffer = this.onImportedOffer.bind(this);
+    this.onCompleteImport = this.onCompleteImport.bind(this);
+
+    this.logger = new ConsoleLogger();
+    this.userService = new DefaultUserService(this.logger, UserModel);
+    this.offerService = new DefaultOfferService(this.logger, OfferModel);
+    this.databaseClient = new MongoDatabaseClient(this.logger);
+  }
+
+  public async execute(
+    filename: string,
+    login: string,
+    password: string,
+    host: string,
+    dbname: string,
+    salt: string
+  ): Promise<void> {
+    const uri = getMongoURI(login, password, host, DEFAULT_DB_PORT, dbname);
+    this.salt = salt;
+
+    await this.databaseClient.connect(uri);
+
     const fileReader = new TSVFileReader(filename.trim());
 
     fileReader.on('line', this.onImportedOffer);
@@ -16,16 +60,45 @@ export class ImportCommand implements Command {
     try {
       fileReader.read();
     } catch (err) {
-      console.error(`Can't import data from file: ${filename}`);
-      console.error(getErrorMessage(err));
+      this.logger.error(
+        `Can't import data from file: ${filename}`,
+        err as Error
+      );
     }
   }
 
-  private onImportedOffer(offer: Offer): void {
-    console.info(offer);
+  private async saveOffer(offer: Offer) {
+    const user = await this.userService.findOrCreate(
+      Object.assign({}, offer.author, { password: DEFAULT_USER_PASSWORD }),
+      this.salt
+    );
+
+    await this.offerService.create({
+      title: offer.title,
+      description: offer.description,
+      publishedAt: offer.publishedAt,
+      city: offer.city,
+      preview: offer.preview,
+      photos: offer.photos,
+      isPremium: offer.isPremium,
+      rating: offer.rating,
+      type: offer.type,
+      rooms: offer.rooms,
+      guests: offer.guests,
+      price: offer.price,
+      facilities: offer.facilities,
+      author: user.id,
+      coords: offer.coords,
+    });
+  }
+
+  private async onImportedOffer(offer: Offer, resolve: () => void) {
+    await this.saveOffer(offer);
+    resolve();
   }
 
   private onCompleteImport(count: number) {
-    console.info(`${count} rows imported.`);
+    this.logger.info(`${count} rows imported.`);
+    this.databaseClient.disconnect();
   }
 }
