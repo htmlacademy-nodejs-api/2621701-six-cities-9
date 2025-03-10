@@ -22,21 +22,26 @@ import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
 
 export class ImportCommand implements Command {
   public readonly name: string = '--import';
+  private readonly logger: Logger = new ConsoleLogger();
+  private readonly userService: UserService = new DefaultUserService(
+    this.logger,
+    UserModel
+  );
 
-  private readonly userService: UserService;
-  private readonly offerService: OfferService;
-  private readonly databaseClient: DatabaseClient;
-  private readonly logger: Logger;
+  private readonly offerService: OfferService = new DefaultOfferService(
+    this.logger,
+    OfferModel
+  );
+
+  private readonly databaseClient: DatabaseClient = new MongoDatabaseClient(
+    this.logger
+  );
+
   private salt: string;
 
   constructor() {
     this.onImportedOffer = this.onImportedOffer.bind(this);
     this.onCompleteImport = this.onCompleteImport.bind(this);
-
-    this.logger = new ConsoleLogger();
-    this.userService = new DefaultUserService(this.logger, UserModel);
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
-    this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
   public async execute(
@@ -68,7 +73,7 @@ export class ImportCommand implements Command {
   }
 
   private async saveOffer(offer: Offer) {
-    const user = await this.userService.findOrCreate(
+    const user = await this.userService.findByEmailOrCreate(
       Object.assign({}, offer.author, { password: DEFAULT_USER_PASSWORD }),
       this.salt
     );

@@ -52,7 +52,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
   @prop({ required: true })
   public publishedAt: Date;
 
-  @prop({ required: true })
+  @prop({ required: true, min: 1, max: 5 })
   public rating: number;
 
   @prop({ required: true })
