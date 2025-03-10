@@ -17,7 +17,7 @@
     "ts": "tsc --noEmit && node --no-warnings=ExperimentalWarning --loader ts-node/esm",
     "cli:import": "npm run build && node ./dist/main.cli.js --import ./mocks/mock-data.tsv",
     "mock:server": "json-server ./mocks/mock-server-data.json --port 3123 --host localhost",
-    "mock:generate:tsv": "npm run ts ./src/main.cli.ts -- --generate 100 ./mocks/mock-data.tsv http://localhost:3123/api"
+    "mock:generate:tsv": "npm run ts ./src/main.cli.ts -- --generate 10 ./mocks/mock-data.tsv http://localhost:3123/api"
   },
   "devDependencies": {
     "@types/convict": "6.1.6",
@@ -41,6 +41,7 @@
     "npm": "^10"
   },
   "dependencies": {
+    "@typegoose/typegoose": "12.4.0",
     "convict": "6.2.4",
     "convict-format-with-validator": "6.2.0",
     "chalk": "5.4.1",
@@ -48,6 +49,7 @@
     "dotenv": "16.4.5",
     "got": "14.2.1",
     "inversify": "6.0.2",
+    "mongoose": "8.3.4",
     "pino": "9.0.0",
     "reflect-metadata": "0.2.2"
   }

@@ -1,8 +1,9 @@
-export type Facility =
-    | 'Breakfast'
-    | 'Air conditioning'
-    | 'Laptop friendly workspace'
-    | 'Baby seat'
-    | 'Washer'
-    | 'Towels'
-    | 'Fridge';
+export enum Facility {
+  Breakfast = 'Breakfast',
+  Air_conditioning = 'Air conditioning',
+  Laptop_friendly_workspace = 'Laptop friendly workspace',
+  Baby_seat = 'Baby seat',
+  Washer = 'Washer',
+  Towels = 'Towels',
+  Fridge = 'Fridge',
+}
