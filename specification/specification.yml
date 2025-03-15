@@ -50,7 +50,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error400'
+                $ref: '#/components/codes/error400'
 
   /offers/create:
     post:
@@ -83,13 +83,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error400'
+                $ref: '#/components/codes/error400'
         '401':
           description: Пользователь не авторизован
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
 
   '/offers/{offerId}':
     get:
@@ -121,7 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error404'
+                $ref: '#/components/codes/error404'
     put:
       tags:
         - offers
@@ -160,25 +160,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error400'
+                $ref: '#/components/codes/error400'
         '401':
           description: Пользователь не авторизован
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
         '403':
           description: Доступ запрещен.
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error403'
+                $ref: '#/components/codes/error403'
         '404':
           description: Ресурс не найден
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error404'
+                $ref: '#/components/codes/error404'
     delete:
       tags:
         - offers
@@ -200,19 +200,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
         '403':
           description: Доступ запрещен.
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error403'
+                $ref: '#/components/codes/error403'
         '404':
           description: Ресурс не найден
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error404'
+                $ref: '#/components/codes/error404'
 
   '/offers/{offerId}/comments':
     get:
@@ -247,13 +247,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error400'
+                $ref: '#/components/codes/error400'
         '404':
           description: Ресурс не найден
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error404'
+                $ref: '#/components/codes/error404'
     post:
       tags:
         - comments
@@ -291,19 +291,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error400'
+                $ref: '#/components/codes/error400'
         '401':
           description: Пользователь не авторизован
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
         '404':
           description: Ресурс не найден
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error404'
+                $ref: '#/components/codes/error404'
 
   '/offers/premium/{city}':
     get:
@@ -336,13 +336,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error400'
+                $ref: '#/components/codes/error400'
         '404':
           description: Ресурс не найден
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error404'
+                $ref: '#/components/codes/error404'
 
   /offers/favorites:
     get:
@@ -369,7 +369,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
 
   '/offers/{offerId}/favorites':
     post:
@@ -394,13 +394,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
         '404':
           description: Ресурс не найден
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error404'
+                $ref: '#/components/codes/error404'
     delete:
       tags:
         - offers
@@ -424,13 +424,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
         '404':
           description: Ресурс не найден
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error404'
+                $ref: '#/components/codes/error404'
 
   /users/register:
     post:
@@ -457,19 +457,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error400'
+                $ref: '#/components/codes/error400'
         '409':
           description: Пользователь с таким email уже существует
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error409'
+                $ref: '#/components/codes/error409'
         '422':
           description: Ошибка валидации данных
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error422'
+                $ref: '#/components/codes/error422'
 
   '/users/login':
     post:
@@ -499,19 +499,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error400'
+                $ref: '#/components/codes/error400'
         '401':
           description: Пользователь не авторизован
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
         '422':
           description: Ошибка валидации данных
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error422'
+                $ref: '#/components/codes/error422'
 
   /users/logout:
     post:
@@ -529,7 +529,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
 
   /users/check:
     get:
@@ -549,7 +549,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/errors/error401'
+                $ref: '#/components/codes/error401'
 
 components:
   schemas:
@@ -893,7 +893,7 @@ components:
           name: Иван
           email: ivan@example.com
 
-  errors:
+  codes:
     error400:
       type: object
       properties:
