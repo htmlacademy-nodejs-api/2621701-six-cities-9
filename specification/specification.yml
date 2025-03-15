@@ -1,0 +1,997 @@
+openapi: 3.1.0
+info:
+  title: API сервер для проекта «Шесть городов»
+  description: |-
+    * Список ресурсов и маршрутов сервера «Шесть городов».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: offers
+    description: Действия с объявлениями.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователем.
+
+paths:
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Получение списка всех предложений (по умолчанию не более 60)
+      description: >-
+        Пользователь получает список предложений по аренде (по умолчанию не
+        более 60)
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: number
+            minimum: 1
+            maximum: 100
+          description: Максимальное количество предложений в ответе (необязательный).
+      responses:
+        '200':
+          description: Успешный возврат списка предложений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/shortOffer'
+              examples:
+                success:
+                  $ref: '#/components/examples/shortOffer'
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error400'
+
+  /offers/create:
+    post:
+      tags:
+        - offers
+      summary: Создание нового предложения
+      description: Создает новое предложение
+
+      requestBody:
+        description: 'Данные, необходимые для создания нового предложения'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/offer'
+
+      responses:
+        '201':
+          description: Оффер успешно создан. Возвращается созданный оффер
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+              examples:
+                success:
+                  summary: Пример успешного ответа
+                  $ref: '#/components/examples/offer'
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error400'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+
+  '/offers/{offerId}':
+    get:
+      tags:
+        - offers
+      summary: Получение детальной информации по офферу
+      description: >-
+        Пользователь получает всю необходимую информацию по офферу, передав
+        offerId нужного оффера
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+          description: ID оффера
+      responses:
+        '200':
+          description: Успешный возврат детальной информации об оффере
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+              examples:
+                success:
+                  $ref: '#/components/examples/offer'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error404'
+    put:
+      tags:
+        - offers
+      summary: Редактирование оффера
+      description: >-
+        Пользователь редактирует оффер, передав обновленные данные и offerId
+        нужного оффера
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+          description: ID оффера
+      requestBody:
+        description: >-
+          Обновленные данные оффера.  Все поля обязательны, даже если они не
+          меняются
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/offer'
+      responses:
+        '200':
+          description: Оффер успешно обновлен. Возвращает обновленный объект оффера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+              examples:
+                success:
+                  $ref: '#/components/examples/offer'
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error400'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+        '403':
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error403'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error404'
+    delete:
+      tags:
+        - offers
+      summary: Удаление оффера
+      description: 'Пользователь удаляет оффер, передав offerId нужного оффера'
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 'ID оффера, который нужно удалить'
+      responses:
+        '204':
+          description: Оффер успешно удален
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+        '403':
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error403'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error404'
+
+  '/offers/{offerId}/comments':
+    get:
+      tags:
+        - comments
+      summary: Получение списка комментариев для оффера
+      description: >-
+        Пользователь может получить список всех комментариев для оффера, передав
+        offerId нужного оффера
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 'ID оффера, для которого нужно получить комментарии'
+      responses:
+        '200':
+          description: Успешный возврат списка комментариев для оффера.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+              examples:
+                success:
+                  $ref: '#/components/examples/comment'
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error400'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error404'
+    post:
+      tags:
+        - comments
+      summary: Добавление комментария для оффера
+      description: >-
+        Пользователь может создать комментарий для оффера, передав offerId
+        нужного оффера и данные комментария
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 'ID оффера, для которого нужно создать комментарий.'
+      requestBody:
+        description: Данные для создания нового комментария
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+      responses:
+        '201':
+          description: Комментарий успешно создан.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+              examples:
+                success:
+                  $ref: '#/components/examples/comment'
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error400'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error404'
+
+  '/offers/premium/{city}':
+    get:
+      tags:
+        - offers
+      summary: Получение списка премиальных предложений для города
+      description: >
+        Возвращает список премиальных предложений (с флагом "Premium" = true)
+        для указанного города.
+        Возвращается не более 3 предложений, отсортированных по дате публикации
+        (по убыванию)
+      parameters:
+        - in: path
+          name: city
+          required: true
+          schema:
+            type: string
+          description: 'Название города, для которого нужно получить премиальные предложения'
+      responses:
+        '200':
+          description: Успешный возврат списка премиальных предложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/shortOffer'
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error400'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error404'
+
+  /offers/favorites:
+    get:
+      tags:
+        - offers
+      summary: Получение списка избранных предложений
+      description: >-
+        Возвращает список предложений, добавленных в избранное текущим
+        пользователем
+      responses:
+        '200':
+          description: Успешный возврат списка избранных предложений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/shortOffer'
+              examples:
+                success:
+                  $ref: '#/components/examples/shortOffer'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+
+  '/offers/{offerId}/favorites':
+    post:
+      tags:
+        - offers
+      summary: Добавление оффера в избранное
+      description: >-
+        Пользователь может добавить оффер в раздел "Избранное", передав offerId
+        нужного оффера
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+          description: 'ID оффера, который нужно добавить в избранное'
+      responses:
+        '201':
+          description: Оффер успешно добавлен в избранное
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error404'
+    delete:
+      tags:
+        - offers
+      summary: Удаление оффера из избранного
+      description: >-
+        Пользователь может удалить оффер из раздела "Избранное", передав offerId
+        нужного оффера
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 'ID оффера, который нужно удалить из избранного'
+      responses:
+        '204':
+          description: Оффер успешно удален из избранного
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error404'
+
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя
+      requestBody:
+        description: Данные для создания нового пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+      responses:
+        '201':
+          description: Пользователь успешно зарегистрирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error400'
+        '409':
+          description: Пользователь с таким email уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error409'
+        '422':
+          description: Ошибка валидации данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error422'
+
+  '/users/login':
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя по логину и паролю
+      requestBody:
+        description: Данные для авторизации пользователя
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/authUser'
+      responses:
+        '200':
+          description: Пользователь успешно авторизован. Возвращает токен доступа.
+          content:
+            application/json:
+              examples:
+                success:
+                  summary: Пример успешного ответа
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJzdQssw5c
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error400'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+        '422':
+          description: Ошибка валидации данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error422'
+
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Выход из закрытой части приложения
+      description: >-
+        Сервис предоставляет ресурс для завершения пользовательского сеанса
+        (доступен только авторизованным клиентам)
+      responses:
+        '204':
+          description: Пользователь успешно вышел из системы
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+
+  /users/check:
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю
+      responses:
+        '200':
+          description: Пользователь авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/codes/error401'
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        firstname:
+          type: string
+          example: Keks
+
+        lastname:
+          type: string
+          example: Cat
+
+        password:
+          type: string
+          example: 123456
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        name:
+          type: string
+          example: keks@htmlacademy.ru
+
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        avatar:
+          type: string
+          example: https://example.com/avatar/dmitry.jpg
+
+        userStatus:
+          type: string
+          example: common
+          enum:
+            - common
+            - pro
+
+    offer:
+      type: object
+      required:
+        - title
+        - description
+        - publishedAt
+        - city
+        - preview
+        - photos
+        - isPremium
+        - isFavorite
+        - rating
+        - type
+        - rooms
+        - guests
+        - price
+        - facilities
+        - author
+        - comments
+        - coords
+      properties:
+        title:
+          type: string
+          example: Просторная 3-комнатная квартира с видом на Волгу в Самаре
+          description: Заголовок оффера
+        description:
+          type: string
+          example: 2-комнатная квартира с дизайнерским ремонтом. Высокие потолки, большие окна, современная кухня.
+          description: Описание оффера
+        publishedAt:
+          type: string
+          format: date-time
+          example: '2025-03-04T16:22:59.107Z'
+          description: Дата публикации оффера
+        city:
+          type: string
+          example: Екатеринбург
+          description: Информация о городе
+        preview:
+          type: string
+          format: url
+          example: 'https://example.com/preview1.jpg'
+          description: URL превью оффера
+        photos:
+          type: array
+          items:
+            type: string
+            format: url
+            example:
+              - 'https://example.com/photo19.jpg'
+              - 'https://example.com/photo20.jpg'
+            description: Спискок URL-фотографий оффера
+        isPremium:
+          type: boolean
+          example: true
+          description: 'Флаг премиальности оффера'
+        isFavorite:
+          type: boolean
+          example: false
+          description: 'Флаг, находится ли оффер в избранном'
+        rating:
+          type: number
+          format: float
+          example: 4.8
+          description: Рейтинг оффера (от 1 до 5)
+        type:
+          type: string
+          example: apartment
+          enum:
+            - apartment
+            - house
+            - room
+            - hotel
+        rooms:
+          type: number
+          format: int32
+          example: 2
+          description: Количество комнат
+        guests:
+          type: number
+          format: int32
+          example: 4
+          description: Количество гостей
+        price:
+          type: number
+          format: int32
+          example: 1000
+          description: Цена аренды
+        facilities:
+          type: array
+          items:
+            type: string
+          example:
+            - Breakfast
+            - Air conditioning
+          enum:
+            - Breakfast
+            - Air conditioning
+            - Laptop friendly workspace
+            - Baby seat
+            - Washer
+            - Towels
+            - Fridge
+          description: Список удобств
+        user:
+          $ref: '#/components/schemas/user'
+          description: Информация о пользователе
+        comments:
+          type: number
+          format: int32
+          example: 12
+          description: Количество комментариев к офферу
+        coords:
+          type: object
+          required:
+            - latitude
+            - longitude
+          properties:
+            latitude:
+              type: number
+              format: float
+              example: 56.8519
+              description: Широта местоположения оффера
+            longitude:
+              type: number
+              format: float
+              example: 60.6122
+              description: Долгота местоположения оффера
+          description: Географические координаты предложения
+
+    shortOffer:
+      type: object
+      required:
+        - title
+        - publishedAt
+        - city
+        - preview
+        - isPremium
+        - isFavorite
+        - rating
+        - type
+        - price
+        - commentsCount
+      properties:
+        title:
+          type: string
+          example: Просторная 3-комнатная квартира с видом на Волгу в Самаре
+          description: Заголовок оффера
+        publishedAt:
+          type: string
+          format: date-time
+          example: '2025-03-04T16:22:59.107Z'
+          description: Дата публикации оффера
+        city:
+          type: string
+          example: Екатеринбург
+          description: Информация о городе
+        preview:
+          type: string
+          format: url
+          example: 'https://example.com/preview1.jpg'
+          description: URL превью оффера
+        isPremium:
+          type: boolean
+          example: true
+          description: 'Флаг премиальности оффера'
+        isFavorite:
+          type: boolean
+          example: false
+          description: 'Флаг, находится ли оффер в избранном'
+        rating:
+          type: number
+          format: float
+          example: 4.8
+          description: Рейтинг оффера (от 1 до 5)
+        type:
+          type: string
+          example: apartment
+          enum:
+            - apartment
+            - house
+            - room
+            - hotel
+        price:
+          type: number
+          format: int32
+          example: 1000
+          description: Цена аренды
+        commentsCount:
+          type: number
+          format: int32
+          example: 12
+          description: Количество комментариев к офферу
+
+    comment:
+      type: object
+      required:
+        - text
+        - publicationDate
+        - rating
+        - author
+      properties:
+        text:
+          type: string
+          example: 'Отличная квартира, рекомендую!'
+          description: Текст комментария
+        publicationDate:
+          type: string
+          format: date-time
+          example: '2025-03-13T12:00:00.000Z'
+          description: Дата публикации комментария
+        rating:
+          type: number
+          format: int32
+          minimum: 1
+          maximum: 5
+          example: 5
+          description: Рейтинг (от 1 до 5)
+        author:
+          $ref: '#/components/schemas/user'
+          description: Информация об авторе комментария
+
+    authUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: test@yandex.ru
+          description: Email пользователя
+        password:
+          type: string
+          example: 12345
+          description: Пароль пользователя
+
+  examples:
+    offer:
+      summary: Ответ на запрос оффера
+      value:
+        id: 6329c3d6a04ab1061c6425ea
+        title: Просторная 3-комнатная квартира с видом на Волгу в Самаре
+        description: 2-комнатная квартира с дизайнерским ремонтом. Высокие потолки, большие окна, современная кухня.
+        publishedAt: '2025-03-04T16:22:59.107Z'
+        city: Екатеринбург
+        preview: 'https://example.com/preview1.jpg'
+        photos:
+          - 'https://example.com/photo19.jpg'
+        isPremium: false
+        isFavorites: false
+        rating: 0
+        type: apartment
+        rooms: 1
+        guests: 2
+        price: 800
+        facilities:
+          - Laptop friendly workspace
+          - Washer,Towels
+        author:
+          id: user123
+          name: Dmitry Kuznetsov
+          email: dmitry.kuznetsov@example.com
+          avatar: https://example.com/avatar/dmitry.jpg
+          userStatus: common
+        coords:
+          longitude: 56.8519
+          latitude: 60.6122
+
+    shortOffer:
+      summary: Сокращенный ответ на запрос оффера
+      value:
+        id: 6329c3d6a04ab1061c6425ea
+        title: Просторная 3-комнатная квартира с видом на Волгу в Самаре
+        publishedAt: '2025-03-04T16:22:59.107Z'
+        city: Екатеринбург
+        preview: 'https://example.com/preview1.jpg'
+        isPremium: false
+        isFavorites: false
+        rating: 0
+        type: apartment
+        price: 800
+        commentsCount: 12
+
+    comment:
+      summary: Пример успешного ответа
+      value:
+        text: 'Отличная квартира, рекомендую!'
+        publicationDate: '2025-03-13T12:00:00.000Z'
+        rating: 5
+        author:
+          id: a1b2c3d4-e5f6-7890-1234-567890abcdef
+          name: Иван
+          email: ivan@example.com
+
+  codes:
+    error400:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Неверный запрос. Пожалуйста, проверьте параметры.
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - Параметр 'param1' отсутствует.
+            - Значение 'param2' недопустимо.
+
+    error401:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: Неавторизованный доступ. Пожалуйста, проверьте ваши учетные данные.
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - Отсутствует токен авторизации.
+            - Токен авторизации истек.
+
+    error403:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 403
+        message:
+          type: string
+          example: У вас нет прав доступа к этому ресурсу.
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - Вам не хватает необходимых разрешений.
+            - Доступ к этому ресурсу ограничен.
+
+    error404:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: Запрашиваемый ресурс не найден.
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - Ресурс с указанным идентификатором не существует.
+            - Указанный путь не найден.
+
+    error409:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 409
+        message:
+          type: string
+          example: Запрос не может быть выполнен из-за конфликта с текущим состоянием ресурса.
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - Пользователь с таким email уже существует.
+            - Ресурс уже занят другим процессом.
+
+    error422:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 422
+        message:
+          type: string
+          example: Запрос не может быть обработан из-за семантических ошибок.
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - Поле 'name' не может быть пустым.
+            - Поле 'age' должно быть числом.
