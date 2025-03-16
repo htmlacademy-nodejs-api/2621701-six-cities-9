@@ -17,3 +17,7 @@ export const FIRST_WEEK_DAY = 1;
 export const LAST_WEEK_DAY = 7;
 
 export const DEFAULT_ERROR_MESAGE = 'UNKNOWN_ERROR';
+
+export const DEFAULT_COMMENT_COUNT = 50;
+export const DEFAULT_OFFER_COUNT = 60;
+export const DEFAULT_PREMIUM_OFFER_COUNT = 3;
