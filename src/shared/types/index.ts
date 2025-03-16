@@ -1,3 +1,4 @@
+export * from './sort.enum.js';
 export * from './Comment/comment.type.js';
 export * from './Offer/coords.type.js';
 export * from './Offer/facility.type.js';

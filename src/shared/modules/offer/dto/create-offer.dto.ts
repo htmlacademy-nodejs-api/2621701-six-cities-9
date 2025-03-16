@@ -1,4 +1,4 @@
-import { Coords, Facility, HouseType, User } from '../../../types/index.js';
+import { Coords, Facility, HouseType } from '../../../types/index.js';
 
 export class CreateOfferDto {
   public title: string;
@@ -14,6 +14,6 @@ export class CreateOfferDto {
   public guests: number;
   public price: number;
   public facilities: Facility[];
-  public author: User;
+  public userId: string;
   public coords: Coords;
 }
